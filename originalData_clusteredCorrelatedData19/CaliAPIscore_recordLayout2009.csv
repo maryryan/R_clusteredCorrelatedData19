@@ -1,0 +1,153 @@
+1,CDS,Character,14,County/District/School code
+2,RTYPE,Character,1,"Record Type: (D=District, S=School, X=State)"
+3,STYPE,Character,1,"Type: 1=Unified, 2=Elementary District, 3=9-12 High District, 4=7-12 High District, E=Elementary School, M=Middle School, H=High School"
+4,SPED,Character,1,"A=Alternative Schools Accountability Model (ASAM), E=Special Education, and C=Combination ASAM and Special Education, S=State Special Schools"
+5,SIZE,Character,1,"S=Small (11-99 Valid Scores), T=Under 11 Valid Scores"
+6,CHARTER,Character,1,"Y=Charter, Not Direct Funded, D=Direct Funded Charter, Blank=Not a Charter School"
+7,SNAME,Character,40,School Name
+8,DNAME,Character,30,District Name
+9,CNAME,Character,15,County Name
+10,FLAG,Character,5,Flag Values
+11,VALID,Character,7,Number of Students Included in the 2009 Academic Performance Index (API)
+12,API09B,Character,5,2009 API (Base)
+13,ST_RANK,Character,5,"Statewide Rank (I=Invalid data, B=District or ASAM, C=Special Education School.)"
+14,SIM_RANK,Character,5,"Similar Schools Rank (I=Invalid data, B=District or ASAM, C=Special Education School, O=Schools with SCI changed because of data change, but similar school ranks not changed, S=Schools whose SCI changed and their Similar School Ranks also changed. Blank=the school did not have an SCI score with p3 data or the school did not have SCI score change with updated data.)"
+15,GR_TARG,Character,5,"2009Ð10 API Growth Target (A=means the school or subgroup scored at or above the statewide performance target of 800 in 2009, B=means this is either an LEA or an Alternative Schools Accountability Model (ASAM) school, C=means this is a special education school.)"
+16,API_TARG,Character,5,"2010 API Target (A=means the school or subgroup scored at or above the statewide performance target of 800 in 2009, B=means this is either an LEA or an Alternative Schools Accountability Model (ASAM) school, C=means this is a special education school.)"
+17,AA_NUM,Character,7,Number of Black or African Americans Included in API
+18,AA_SIG,Character,5,Black or African Americans Significant?(Yes/No)
+19,AA_API,Character,5,2009 Black or African American API (Base)
+20,AA_GT,Character,5,2009Ð10 Black or African American Subgroup Growth Target
+21,AA_TARG,Character,5,2010 Black or African American Subgroup API Target
+22,AI_NUM,Character,7,Number of American Indian/Alaska Native Included in API
+23,AI_SIG,Character,5,American Indian/Alaska Native Significant?(Yes/No)
+24,AI_API,Character,5,2009 American Indian/Alaska Native API (Base)
+25,AI_GT,Character,5,2009Ð10 American Indian/Alaska Native Subgroup Growth Target
+26,AI_TARG,Character,5,2010 American Indian/Alaska Native Subgroup API Target
+27,AS_NUM,Character,7,Number of Asian Included in API
+28,AS_SIG,Character,5,Asian Significant?(Yes/No)
+29,AS_API,Character,5,2009 Asian API (Base)
+30,AS_GT,Character,5,2009Ð10 Asian Subgroup Growth Target
+31,AS_TARG,Character,5,2010 Asian Subgroup API Target
+32,FI_NUM,Character,7,Number of Filipino Included in API
+33,FI_SIG,Character,5,Filipino Significant?(Yes/No)
+34,FI_API,Character,5,2009ÊFilipino API (Base)
+35,FI_GT,Character,5,2009Ð10 Filipino Subgroup Growth Target
+36,FI_TARG,Character,5,2010 Filipino Subgroup API Target
+37,HI_NUM,Character,7,Number of Hispanic or Latino included in API
+38,HI_SIG,Character,5,Hispanic or Latino Significant?(Yes/No)
+39,HI_API,Character,5,2009 Hispanic or Latino API (Base)
+40,HI_GT,Character,5,2009Ð10 Hispanic or Latino Subgroup Growth Target
+41,HI_TARG,Character,5,2010 Hispanic or Latino Subgroup API Target
+42,PI_NUM,Character,7,Number of Native Hawaiian/Pacific Islander Included in API
+43,PI_SIG,Character,5,Native Hawaiian/Pacific Islander Significant?(Yes/No)
+44,PI_API,Character,5,2009 Native Hawaiian/Pacific Islander API (Base)
+45,PI_GT,Character,5,2009Ð10 Native Hawaiian/Pacific Islander Subgroup Growth Target
+46,PI_TARG,Character,5,2010 Subgroup Native Hawaiian/Pacific Islander API Target
+47,WH_NUM,Character,7,Number of White included in API
+48,WH_SIG,Character,5,White Significant?(Yes/No)
+49,WH_API,Character,5,2009 White API (Base)
+50,WH_GT,Character,5,2009Ð10 White Subgroup Growth Target
+51,WH_TARG,Character,5,2010 White API Target
+52,MR_NUM,Character,7,Number of students who marked 'Two or More Races' included in API
+53,MR_SIG,Character,5,'Two or More Races' Significant?(Yes/No)
+54,MR_API,Character,5,2009 'Two or More Races' API (Base)
+55,MR_GT,Character,5,2009Ð10 'Two or More Races' Growth Target
+56,MR_TARG,Character,5,2010 'Two or More Races' API Target
+57,SD_NUM,Character,7,Number of Socioeconomically Disadvantaged (SD) Students Included in API
+58,SD_SIG,Character,5,Socioeconomically Disadvantaged Significant?(Yes/No)
+59,SD_API,Character,5,2009 Socioeconomically Disadvantaged API (Base)
+60,SD_GT,Character,5,2009Ð10 Socioeconomically Disadvantaged subgroup Growth Target
+61,SD_TARG,Character,5,2010 Socioeconomically Disadvantaged API Target
+62,EL_NUM,Character,7,Number of English Learner Students Included in API
+63,EL_SIG,Character,5,English Learner Significant?(Yes/No)
+64,EL_API,Character,5,2009 English Learner API (Base)
+65,EL_GT,Character,5,2009Ð10 English Learner subgroup Growth Target
+66,EL_TARG,Character,5,2010 English Learner API Target
+67,DI_NUM,Character,7,Number of Included in API
+68,DI_SIG,Character,5,Students with Disabilities Significant?(Yes/No)
+69,DI_API,Character,5,2009 Students with Disabilities API (Base)
+70,DI_GT,Character,5,2009Ð10 Students with Disabilities subgroup Growth Target
+71,DI_TARG,Character,5,2010 Students with Disabilities API Target
+72,PCT_AA,Character,5,Percent Black or African American
+73,PCT_AI,Character,5,Percent American Indian
+74,PCT_AS,Character,5,Percent Asian
+75,PCT_FI,Character,5,Percent Filipino
+76,PCT_HI,Character,5,Percent Hispanic or Latino
+77,PCT_PI,Character,5,Percent Native Hawaiian/Pacific Islander
+78,PCT_WH,Character,5,Percent White
+79,PCT_MR,Character,5,Percent 'Two or More Races'
+80,MEALS,Character,5,Percentage of Students Tested that are eligible for Free or Reduced Price Lunch Program
+81,P_GATE,Character,5,Percent of participants in Gifted and Talented education programs (STAR)
+82,P_MIGED,Character,5,Percent of participants in migrant education programs (STAR)
+83,P_EL,Character,5,Percent English Learners
+84,P_RFEP,Character,5,Percent of Reclassified Fluent-English-Proficient (RFEP) students (STAR)
+85,P_DI,Character,5,Percent of Students with Disabilities (STAR)
+86,YR_RND,Character,5,Year Round School
+87,CBMOB,Character,5,Percentage of Students counted as part of school enrollment in October 2008 CBEDS and has been continuously enrolled since that date
+88,DMOB,Character,5,Percentage of Students counted as part of district enrollment in October 2008 CBEDS and has been continuously enrolled since that date
+89,ACS_K3,Character,5,Average Class Size (Grades K-3)
+90,ACS_46,Character,5,Average Class Size (Grades 4-6)
+91,ACS_CORE,Character,5,Number of Core Academic Courses
+92,PCT_RESP,Character,5,Percent of Student Answer Documents with Parent Education Level Information
+93,NOT_HSG,Character,5,Parent Education Level: Percent Not High School Graduate
+94,HSG,Character,5,Parent Education Level: Percent High School Graduate
+95,SOME_COL,Character,5,Parent Education Level: Percent Some College
+96,COL_GRAD,Character,5,Parent Education Level: Percent College Graduate
+97,GRAD_SCH,Character,5,Parent Education Level: Percent Graduate School
+98,AVG_ED,Character,5,Average Parent Education Level
+99,FULL,Character,5,Percent Teachers at this school with Full Credentials
+100,EMER,Character,5,Percent Teachers at this school with Emergency Credentials
+101,PEN_2,Character,5,Percent of Enrollments in grade 2 (STAR)
+102,PEN_35,Character,5,Percent of Enrollments in grades 3-5 (STAR)
+103,PEN_6,Character,5,Percent of Enrollments in grade 6 (STAR)
+104,PEN_78,Character,5,Percent of Enrollments in grades 7-8 (STAR)
+105,PEN_91,Character,5,Percent of Enrollments in grades 9-11 (STAR)
+106,ENROLL,Character,7,Number of Students Enrolled on the First Day of Testing for Grades 2-11
+107,PARENT_OPT,Character,7,Number of Students Excused from Testing by Parental Written Request
+108,TESTED,Character,7,Number of Students Tested on STAR
+109,SCI,Character,15,School Characteristic Index
+110,VCST_E28,Character,10,Valid Score for California Standards Test (CST) in English-language arts Grades 2-8
+111,PCST_E28,Character,10,Product of Test Weights Multiplied by Valid scores for CST in English-language arts Grades 2-8
+112,VCST_E91,Character,10,Valid Score for CST in English-language arts Grades 9-11
+113,PCST_E91,Character,10,Product of Test Weights Multiplied by Valid scores for CST in English-language arts Grades 9-11
+114,CW_CSTE,Character,5,School Content Area Weights Percentage in CST English-language arts
+115,VCST_M28,Character,10,Valid Score for CST in mathematics Grades 2-8
+116,PCST_M28,Character,10,Product of Test Weights Multiplied by Valid scores for CST in mathematics Grades 2-8
+117,VCST_M91,Character,10,Valid Score for CST in mathematics Grades 9-11
+118,PCST_M91,Character,10,Product of Test Weights Multiplied by Valid scores for CST in mathematics Grades 9-11
+119,CW_CSTM,Character,5,School Content Area Weights Percentage in CST mathematics
+120,VCST_S28,Character,10,Valid Score for CST in science Grades 2-8
+121,PCST_S28,Character,10,Product of Test Weights Multiplied by Valid scores for CST in science Grades 2-8
+122,VCST_S91,Character,10,"Valid Score for CST in science Grades 9-11 (End of Course, CST )"
+123,PCST_S91,Character,10,"Product of Test Weights Multiplied by Valid scores for CST in science Grades 9-11 (End of Course, CST )"
+124,CWS_91,Character,5,"School Content Area Weights Percentage in CST science (End of Course, CST )"
+125,VCST_H28,Character,10,Valid Score for CST in history-social science Grades 2-8
+126,PCST_H28,Character,10,Product of Test Weights Multiplied by Valid scores for CST in history-social science Grades 2-8
+127,VCST_H91,Character,10,Valid Score for CST in history-social science Grades 9-11
+128,PCST_H91,Character,10,Product of Test Weights Multiplied by Valid scores for CST in history-social science Grades 9-11
+129,CW_CSTH,Character,5,School Content Area Weights Percentage in CST history-social science
+130,VCHS_E91,Character,10,Valid Score for California High School Exit Exam (CAHSEE) ELA in Grades 9-11
+131,PCHS_E91,Character,10,Product of Test Weights Multiplied by Valid scores for CAHSEE ELA in Grades 9-11
+132,CW_CHSE,Character,5,School Content Area Weights Percentage in CAHSEE ELA
+133,VCHS_M91,Character,10,Valid Score for CAHSEE mathematics in Grades 9-11
+134,PCHS_M91,Character,10,Product of Test Weights Multiplied by Valid scores for CAHSEE mathematics in Grades 9-11
+135,CW_CHSM,Character,5,School Content Area Weights Percentage in CAHSEE mathematics
+136,TOT_28,Character,10,Product of Total of Test Weights Multiplied by Total of Valid scores in Grades 2-8
+137,TOT_91,Character,10,Product of Total of Test Weights Multiplied by Total of Valid scores in Grades 9-11
+138,CW_SCI,Character,5,School Content Area Weights Percentage in CST Life Science Grade 10 and Grades 2-8
+139,VCST_LS10,Character,10,Valid Score for CST in Life Science Grade 10 only
+140,PCST_LS10,Character,10,Product of Test Weights Multiplied by Valid scores for CST in Life Science Grade 10 only
+141,CWM2_28,Character,5,School Content Area Weights Percentage for Mathematics Assignment of 200 CST in grades 2-8
+142,VCSTM2_28,Character,10,Valid Score for Mathematics Assignment of 200 CST in Grades 2-8
+143,PCSTM2_28,Character,10,Product of Test Weights Multiplied by Valid scores for Mathematics Assignment of 200 CST in Grades 2-8
+144,CWM2_91,Character,5,School Content Area Weights Percentage for Mathematics Assignment of 200 CST in grades 9-11
+145,VCSTM2_91,Character,10,Valid Score for Mathematics Assignment of 200 CST in Grades 9-11
+146,PCSTM2_91,Character,10,Product of Test Weights Multiplied by Valid scores for Mathematics Assignment of 200 CST in Grades 9-11
+147,CWS2_91,Character,5,School Content Area Weights Percentage for Science Assignment of 200 CST in grades 9-11
+148,VCSTS2_91,Character,10,Valid Score for Science Assignment of 200 CST in Grades 9-11
+149,PCSTS2_91,Character,10,Product of Test Weights Multiplied by Valid scores for Science Assignment of 200 CST in Grades 9-11
+150,IRG5,Character,1,Testing irregularities greater than zero but less than 5 percent. (Y=Yes)
+151,CMA_ADJ_ELA,Character,5,"The number of valid ELA records excluded for any of the content areas due to the CMA adjustment, Grade 9"
+152,CMA_ADJ_MATH,Character,5,"The number of valid Math records excluded for any of the content areas due to the CMA adjustment, Grades 7-11"
+153,CMA_ADJ_SCI,Character,5,"The number of valid Science records excluded for any of the content areas due to the CMA adjustment, Grade 10"
