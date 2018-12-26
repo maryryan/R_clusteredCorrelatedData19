@@ -114,8 +114,12 @@ class: title-slide2, inverse
 ---
 
 # What's wrong with linear regression?
-> "Essentially, all models are wrong, but some are useful" - George Box, *Empirical Model-Building and Response Surfaces*, pg. 424
-
+<!-- quote box -->
+<!-- for box with color border: -->
+<!-- div style="background: #5f6063; padding: 10px; border-radius: 25px; border-width: 3px; border-color:#F92771; border-style:solid; width:700px; -->
+<div style="background: #5f6063; padding: 10px; border-radius: 25px; width:700px;">
+<blockquote>"Essentially, all models are wrong, but some are useful" - George Box, <i>Empirical Model-Building and Response Surfaces</i>, pg. 424</blockquote>
+</div>
 
 --
 
