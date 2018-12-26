@@ -1,0 +1,569 @@
+---
+title: "R: Models for Clustered and Correlated Data"
+subtitle: "Presented at NICAR 2019"
+author: "Mary Ryan"
+date: "March 7-10"
+institute: "University of California, Irvine"
+output:
+  xaringan::moon_reader:
+    lib_dir: libs
+    css: ["default", "lucy-fonts"]#like lucy
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+    seal: false
+---
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+knitr::opts_chunk$set(cache=TRUE)
+```
+
+```{r load libraries, include = FALSE}
+#install.packages( 'tidyverse' )
+#install.packages( 'gee' )
+#install.packages( 'survey' )
+#install.packages( 'geepack' )
+
+library( tidyverse, quietly=T, warn.conflicts = F )
+library( gee, quietly=T, warn.conflicts = F )
+library( geepack, quietly=T, warn.conflicts = F )
+library( survey, quietly=T, warn.conflicts = F  )
+
+```
+
+```{r load data, include = FALSE}
+data(ohio)
+
+housing <- read.csv( "house_edu.csv", header=T )
+housing <- housing[,-1]
+
+api <- read.csv( "CaliAPIscore_master.csv", header=T )
+api <- api[,-1]
+
+api.valid <- api[!(is.na(api$VALID)),]
+
+api.districts <- api.valid[which( api.valid$RTYPE == "D" ),]
+
+```
+
+```{r function definitions, include = FALSE}
+#####   ifelse1() : Helper function that allows for 
+#####                           returning a multivariate response
+#####                           based upon a univariate logical comparison
+ifelse1 <- function (test, yes, no){
+    if (test) yes
+    else no
+}
+
+### function that allows us to get confidence intervals on binary longitudinal glms ###
+## also lets us implement a robust variance fix-em-up ##
+glmCI.long <- function (model, transform = TRUE, robust = FALSE) {
+   link <- model$family$link
+   coef <- summary(model)$coef[, 1]
+   se <- ifelse1(robust, summary(model)$coef[,4], summary(model)$coef[, 
+                                                                      2])
+   zvalue <- coef/se
+   pvalue <- 2 * (1 - pnorm(abs(zvalue)))
+   if (transform & is.element(link, c("logit", "log"))) {
+      ci95.lo <- exp(coef - qnorm(0.975) * se)
+      ci95.hi <- exp(coef + qnorm(0.975) * se)
+      est <- exp(coef)
+   }
+   else {
+      ci95.lo <- coef - qnorm(0.975) * se
+      ci95.hi <- coef + qnorm(0.975) * se
+      est <- coef
+   }
+   rslt <- round(cbind(est, ci95.lo, ci95.hi, zvalue, pvalue), 
+                 4)
+   colnames(rslt) <- ifelse1(robust, c("Est", "robust ci95.lo", 
+                                       "robust ci95.hi", "robust z value", "robust Pr(>|z|)"), 
+                             c("Est", "ci95.lo", "ci95.hi", "z value", "Pr(>|z|)"))
+   colnames(rslt)[1] <- ifelse(transform & is.element(link, 
+                                                      c("logit", "log")), "exp( Est )", "Est")
+   rslt
+}
+
+
+```
+
+layout: true
+class: inverse
+
+<!-- footer -->
+ <div style="position:fixed; bottom:4px; left:4px; font-size: 12pt; background-color: #555555; width:91%">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Mary Ryan</div> <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+<div style="position:fixed; bottom:4px; left:300px; font-size: 12pt;">R: Models for Clustered and Correlated Data</div> <!--&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; -->
+<div style="position:fixed; bottom:4px; right:90px; font-size: 12pt;">NICAR 2019</div>
+
+---
+
+class: title-slide2, inverse
+
+# <center> R: Models for Clustered and Correlated Data </center>
+## <center> Presented at NICAR 2019 </center>
+### <center> Mary Ryan </center>
+
+<!-- social media info -->
+<div style="position:fixed; bottom:40px; left:70px;">
+<div><img src="libs/Twitter-Social-Icons/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png" width="40"/> <a href="https://twitter.com/Marym_Ryan"> @Marym_Ryan </a></div>
+<div><img src="libs/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png" width="40"/> <a href="https://github.com/maryryan"> github.com/maryryan </a> </div>
+<div><img src="https://svgsilh.com/svg/1873373-ffffff.svg" width="35"/><a href="https://www.ics.uci.edu/~marymr/"> www.ics.uci.edu/~marymr </a></div>
+</div>
+
+---
+
+# What's wrong with linear regression?
+> "Essentially, all models are wrong, but some are useful" - George Box, *Empirical Model-Building and Response Surfaces*, pg. 424
+
+
+--
+
+Other iterations:  
+
+- "Remember that all models are wrong; the practical question is **how wrong do they have to be to not be useful**" (*Empirical Model-Building and Response Surfaces*, pg. 74)
+- "The most that can be expected from any model is that it can supply **a useful approximation to reality**: All models are wrong; some models are useful" (*Statistics for Experimenters*, pg. 440) 
+
+---
+
+# What's wrong with linear regression?
+
+- Regular linear regression assumes each datapoint is *independent* of each other
+- What if we have multiple datapoints for each person/school/hospital/location we're measuring?
+
+---
+class: middle
+
+
+```{r stat difficulties, echo=FALSE, out.width='100%', fig.align="center"}
+knitr::include_graphics('./presentationExtras_clusteredCorrelatedDataNICAR2019/statDifficulties.jpg')
+```
+
+---
+
+# Ordinary Least Squares (OLS)
+
+- If we have data $\boldsymbol{X}$ and response $\vec{Y}$, we can find our regression coefficients through:
+
+$$\boldsymbol{X}^T(\vec{Y} - \boldsymbol{X}\vec{\beta}) = 0$$
+
+- Implement this using the `lm()` function
+
+---
+
+# Iteratively Reweighted Least Squares (IRLS)
+
+-  Put a weight on the equation that estimates our coefficients
+      - Accounts for the fact that we are no longer dealing with completely independent data points
+
+$$\boldsymbol{X}^T\boldsymbol{W}(\vec{Y} - \boldsymbol{X}\vec{\beta}) = 0$$
+
+- Implement this using the `gee()` function from the `gee` package
+      - Can also use `lme()` from the `nlme` package, and `lmer()` from the `lme4` package
+
+---
+class: middle
+
+```{r end stat sidebar, echo=FALSE, out.width='200%', fig.align="center"}
+knitr::include_graphics('./presentationExtras_clusteredCorrelatedDataNICAR2019/endStatSidebar.jpg')
+```
+
+---
+
+# The `gee()` Function
+
+- gee stands for Generalized Estimating Equation
+
+Like with the `lm()` function, there are several arguments we need to fill in:
+
+- **Formula**: this is the same formula you would plug in for `lm()`, of the form `response ~ variable1 + variable2 + …`
+- **id**: this is a variable in your dataframe that identifies your clusters. If I have 12 patients with 3 datapoints each, each datapoint needs to have something that tells us which patient it is coming from. Usually this is done as the very first column of your dataframe, where the id can be a number or a string.
+- **data**: like with `lm()`, this is the name of your dataframe
+      
+---
+      
+# The `gee()` Function
+
+- **family**: the default for this argument is “gaussian”“, which just means Normal. We generally won’t put anything in for this argument unless we’re dealing with binary data (we’ll see this later).
+- **corstr**: this tells the function how we want to do our weights.
+      - There are 3 main options for this:
+      1. “independence”: this is the default and will get us `lm()`
+      2. “exchangeable”: this gives us random intercepts
+      3. “AR-M”: this gives us random slopes and random intercepts. With this though, we also need to specify a “Mv” argument, which will be 1.
+      
+--
+
+<!-- side note box -->
+<div style="background: #5f6063; padding: 20px; border-radius: 25px; width:700px"><i>
+Side note: two other popular functions for modeling longitudinal data are
+<span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">lme()</span>
+ from the 
+ <span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">nlme package</span>, 
+ and 
+ <span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">lmer()</span> 
+ from the 
+ <span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">lme4</span> 
+ package. These work similarly to the 
+ <span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">gee()</span> 
+ function but have slightly different synatx and technically require stronger statistical assumptions to use. I generally stick to 
+ <span style="font-family: 'Source Code Pro', 'Lucida Console', Monaco, monospace; font-size: 90%">gee()</span>.
+</i></div>
+
+---
+
+# Robust Variance
+
+- Sometimes different clusters/groups will have different variances
+- Robust variance is a post-model fix-em-up to account for different cluster variances
+      - If the variances really don’t differ by cluster, you’ll get something pretty close to the regular varaince
+      - If they do differ, then this will help fix the variance
+- Robust variance doesn't perform well when there are fewer than 50 clusters
+      - If you have fewer than 50 clusters, it’s safer to go with the regular variance because at least we know why it’s wrong
+
+---
+
+# Example 1: Median Housing Value in Texas
+
+- Housing dataset (select variables)
+      - `countyID`: ID number for each county
+      - `countyName`: Name of county
+      - `yrsSince2009`: Number of years since 2009
+      - `Median`: Median housing value in county
+      - `totPop18plus`: Population 18 years or older
+      - `BAtotPop18plus`: Population 18 years or older with at least a Bachelors
+      - `BApctTotPop18plus`: Percentage of population 18 years or older with at least a Bachelors
+      
+- 53 unique counties
+- 420 unique observations
+- 8 years of data
+
+**Question: how does the percentage of Bachelors-holders in a distrct affect mean housing value?**
+
+---
+
+# Example 1: Random Slopes and Intercepts
+
+- Forest plot: represents what the intercepts and slopes would be if we performed individual lm()s on the data from each subject separately
+- If the data were truly independent, all the lines would be overlapping
+      - If plot on left shows non-overlapping lines: case for random intercepts
+      - If plot on right shows non-overlapping lines: case for random slopes
+
+---
+      
+# Example 1: Random Slopes and Intercepts
+
+```{r housing forest plots, fig.align='center'}
+
+housing.grp <- groupedData( Median ~ yrsSince2009 | countyID,
+                                  data=housing )
+
+housing.grp.lm <- lmList( Median ~ yrsSince2009 | countyID,
+                        data=housing.grp )
+
+## creating forest plots of the intercepts & slopes of all the regressions ##
+len <- length(housing.grp.lm)
+forest.matrix <- matrix(NA, nrow = len, ncol = 7)
+forest.matrix[,1] <- names(housing.grp.lm)#county names
+forest.matrix[,2] <- intervals(housing.grp.lm)[1:len]#lower int
+forest.matrix[,3] <- intervals(housing.grp.lm)[(len+1):(2*len)]#est. int
+forest.matrix[,4] <- intervals(housing.grp.lm)[(2*len + 1):(3*len)]#upper int
+forest.matrix[,5] <- intervals(housing.grp.lm)[(3*len + 1):(4*len)]#lower sope
+forest.matrix[,6] <- intervals(housing.grp.lm)[(4*len + 1):(5*len)]#est. slope
+forest.matrix[,7] <- intervals(housing.grp.lm)[(5*len + 1):(6*len)]#upper slope
+
+
+par(mfrow = c(1,2))
+plot( forest.matrix[1,2:4], rep(1, 3), type = "l", ylim = c(1, len),
+      xlim=c(70000,210000),xlab = "Intercept",
+      ylab= "Order of Intercept",
+      cex.lab=0.8, cex.axis=0.7)
+for( j in 1:length(unique(forest.matrix[,1]))){
+   lines( forest.matrix[j,2:4], rep(j, 3) )
+   
+}
+
+plot( forest.matrix[1,5:7], rep(1, 3), type = "l", ylim = c(1, len),
+      xlim=c(-200,12000), xlab = "Slope", ylab= "Order of Intercept",
+      cex.lab=0.8, cex.axis=0.7)
+for( j in 1:length(unique(forest.matrix[,1]))){
+   lines( forest.matrix[j,5:7], rep(j, 3) )
+   
+}
+mtext("Random Intercepts & Slopes of Texas Median Home Values",
+      outer=TRUE,line=-2, cex=0.9)
+
+```
+
+---
+
+# Example 1: Random Slopes and Intercepts
+
+- Helps us determine what kind of *correlation structure* we want to use in our model
+      - No overlapping on either plot $\Rightarrow$ Independence structure (`corstr="independence"`)
+      - Overlapping on left but not on right $\Rightarrow$ Exchangeable correlation structure (`corstr="exchangeable`)
+      - Overlapping on both left and right $\Rightarrow$ AR-1 correlation structure (`corstr = "AR-M; Mv = 1`)
+
+---
+
+# Example 1: Modeling with Independent Structure
+
+```{r texas indep model show, eval=F, echo=T}
+house.indep <- gee( Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "independence" )
+```
+```{r texas indep model run, include=F}
+## Independence correlation structure ##
+house.indep <- gee( Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "independence" )
+```
+```{r texas indep summ, echo=T}
+summary( house.indep )$coef
+
+```
+
+---
+
+# Example 1: `gee()` vs `lm()`
+
+```{r texas indep summ vs, echo=T}
+summary( house.indep )$coef
+
+```
+
+```{r texas lm summ, echo=T}
+summary( lm(Median ~ BApctTotPop18plus + yrsSince2009, data = housing ) )$coef
+
+```
+
+---
+
+# Example 1: Modeling with Exchangeable Structure
+
+```{r texas exch model show, eval=F, echo=T}
+house.exch <- gee (Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "exchangeable" )
+```
+```{r texas exch model run, include=F}
+## Exchangeable correlation structure ##
+house.exch <- gee (Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "exchangeable" )
+```
+```{r texas exch summ, echo=T}
+summary( house.exch )$coef
+
+```
+
+---
+
+# Example 1: Modeling with AR-1 Structure
+
+```{r texas ar1 model show, eval=F, echo=T}
+house.ar1 <- gee( Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "AR-M",
+                 Mv = 1 )
+```
+
+```{r texas ar1 model run, include=F}
+## AR-1 correlation structure ##
+house.ar1 <- gee( Median ~ BApctTotPop18plus + yrsSince2009,
+                 id = countyID,
+                 data = housing,
+                 corstr = "AR-M",
+                 Mv = 1 )
+```
+```{r texas ar1 summ, echo=T}
+summary( house.ar1 )$coef
+```
+
+---
+
+# Example 2: California API Scores
+
+- API dataset (select variables)
+      - `CDS`: County/District/School code
+      - `RTYPE`: Record Type: (D=District, S=School, X=State)
+      - `DNAME`: District name
+      - `API`: Base API score
+      - `PCT_AA`, `PCT_AS`, `PCT_HI`: Percentage of African American, Asian, and Hispanic students
+      - `P_EL`: Percent English learners
+      - `MEALS`: Percentage of Students Tested that are eligible for Free or Reduced Price Lunch Program
+
+- 1047 unique school districts
+- 7178 total observations
+- 7 years of data
+
+**Question: how does charter status affect district API score?**
+
+---
+
+# Example 2: Forest Plot
+
+```{r api forest plots, fig.align='center'}
+
+obs1 <- table(api.districts$CDS)
+obs1.ids <- as.numeric(names(obs1[obs1==1]))
+
+api.grp <- groupedData( API ~ year | CDS,
+                                  data=api.districts[which(!(api.districts$CDS %in% obs1.ids)),] )
+
+api.grp.lm <- lmList( API ~ year | CDS,
+                        data=api.grp[,c("CDS", "API","year")])
+
+
+## creating forest plots of the intercepts & slopes of all the regressions ##
+len <- length(api.grp.lm)
+forest.matrix <- matrix(NA, nrow = len, ncol = 7)
+forest.matrix[,1] <- as.numeric(names(api.grp.lm))#district names
+forest.matrix[,2] <- intervals(api.grp.lm)[1:len]#lower int
+forest.matrix[,3] <- intervals(api.grp.lm)[(len+1):(2*len)]#est. int
+forest.matrix[,4] <- intervals(api.grp.lm)[(2*len + 1):(3*len)]#upper int
+forest.matrix[,5] <- intervals(api.grp.lm)[(3*len + 1):(4*len)]#lower sope
+forest.matrix[,6] <- intervals(api.grp.lm)[(4*len + 1):(5*len)]#est. slope
+forest.matrix[,7] <- intervals(api.grp.lm)[(5*len + 1):(6*len)]#upper slope
+
+
+par(mfrow = c(1,2))
+plot( forest.matrix[1,2:4], rep(1, 3), type = "l", ylim = c(1, len),
+      xlim=c( -120000, 120000), xlab = "Intercept",
+      ylab= "Order of Intercept",
+      cex.lab=0.8, cex.axis=0.7)
+for( j in 1:length(unique(forest.matrix[,1]))){
+   lines( as.numeric(forest.matrix[j,2:4]), rep(j, 3) )
+   
+}
+
+plot( forest.matrix[1,5:7], rep(1, 3), type = "l", ylim = c(1, len),
+      xlim=c( -50, 75 ), xlab = "Slope", ylab= "Order of Intercept",
+      cex.lab=0.8, cex.axis=0.7)
+for( j in 1:length(unique(forest.matrix[,1]))){
+   lines( forest.matrix[j,5:7], rep(j, 3) )
+   
+}
+mtext("Random Intercepts & Slopes of California API Scores",
+      outer=TRUE,line=-2, cex=0.9)
+
+```
+
+---
+
+# Example 2: Modeling with Exchangeable Structure
+
+```{r api model show, eval=F}
+api.exch <- gee( API ~ PCT_AA + PCT_AS + PCT_HI + MEALS + P_EL + year,
+                  id = CDS,
+                  data = api.districts,
+                  corstr = "exchangeable" )
+```
+```{r api model run, include=F}
+api.exch <- gee( API ~ PCT_AA + PCT_AS + PCT_HI + MEALS + P_EL + year,
+                  id = CDS,
+                  data = api.districts,
+                  corstr = "exchangeable" )
+```
+
+```{r api summ, echo=T}
+summary( api.exch )$coef
+```
+
+---
+
+# Example 3: Childhood Wheezing and Maternal Smoking
+
+- Ohio dataset
+      - `resp`: an indicator of wheeze status (1=yes, 0=no)
+      - `id`: a numeric vector for subject id
+      - `age`: a numeric vector of age, 0 is 9 years old
+      - `smoke`: an indicator of maternal smoking at the first year of the study
+- 537 unique subjects
+- 2148 total observations
+
+**Question: how does maternal smoking affect wheezing?**
+
+---
+
+# Example 3: Method
+
+- Binary response, so using logistic regression
+      - binary response transformed using logit function:
+      - regression tells us about variables changing the *log-odds* of response, instead of the mean
+$$logit(\mu) = ln(\frac{\mu}{1-\mu})$$
+
+---
+
+# Example 3: Modeling with Exchangeable Structure
+
+```{r ohio exch model show, eval=FALSE, echo=TRUE}
+ohio.exch <- gee( resp ~ age + smoke,
+                   id = id,
+                   data = ohio,
+                   family=binomial(link='logit'),
+                   corstr="exchangeable",
+                  silent = T )
+```
+```{r ohio exch model run, include=FALSE}
+ohio.exch <- gee( resp ~ age + smoke,
+                   id = id,
+                   data = ohio,
+                   family=binomial(link='logit'),
+                   corstr="exchangeable",
+                  silent = T )
+```
+```{r ohio exch summ, echo=TRUE}
+summary( ohio.exch )$coef
+
+```
+
+---
+
+# Example 3: Modeling with Exchangeable Structure
+
+```{r ohio exch glmCI, echo=T}
+glmCI.long( ohio.exch, robust = T )
+
+```
+
+---
+
+# Example 3: Modeling with AR-1 Structure
+
+```{r ohio AR1 model show, eval=FALSE, echo=T}
+ohio.ar1 <- gee( resp ~ age + smoke,
+                  id = id,
+                  data = ohio,
+                  family=binomial(link='logit'),
+                  corstr="AR-M",
+                  Mv = 1,
+                 silent = T )
+```
+```{r ohio AR1 model run, include=FALSE}
+## AR-1 correlation structure ##
+ohio.ar1 <- gee( resp ~ age + smoke,
+                  id = id,
+                  data = ohio,
+                  family=binomial(link='logit'),
+                  corstr="AR-M",
+                  Mv = 1,
+                 silent = T )
+```
+```{r ohio AR1 summ, echo=T}
+summary( ohio.ar1 )$coef
+```
+
+---
+
+# Example 3: Modeling with AR-1 Structure
+
+```{r ohio AR1 glmCI, echo=T}
+glmCI.long( ohio.ar1, robust = T )
+
+```
