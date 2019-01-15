@@ -162,7 +162,6 @@ Side note: two other popular functions for modeling longitudinal data are
       - `totPop18plus`: Population 18 years or older
       - `BAtotPop18plus`: Population 18 years or older with at least a Bachelors
       - `BApctTotPop18plus`: Percentage of population 18 years or older with at least a Bachelors
-      
 - 53 unique counties
 - 420 unique observations
 - 8 years of data
@@ -182,7 +181,7 @@ Side note: two other popular functions for modeling longitudinal data are
       
 # Example 1: Random Slopes and Intercepts
 
-&lt;img src="presentation_ninja_files/figure-html/housing forest plots-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_ninja_files/figure-html/housing forest plots-1.png" width="55%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -318,7 +317,7 @@ summary( house.ar1 )$coef
 
 # Example 2: Forest Plot
 
-&lt;img src="presentation_ninja_files/figure-html/api forest plots-1.png" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_ninja_files/figure-html/api forest plots-1.png" width="60%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -458,6 +457,24 @@ glmCI.long( ohio.ar1, robust = T )
 ## age                  0.0107
 ## smoke                0.1751
 ```
+
+---
+
+# Thanks!
+
+More Resources
+- `gee` package &lt;a href="https://cran.r-project.org/web/packages/gee/gee.pdf"&gt;documentation&lt;/a&gt; on CRAN
+- Center for Multilevel Modeling: &lt;a href="http://www.bristol.ac.uk/cmm/"&gt;http://www.bristol.ac.uk/cmm&lt;/a&gt;
+- These &lt;a href="https://www.theanalysisfactor.com/r-tutorial-glm1/"&gt;blogposts&lt;/a&gt; from Dr. David Lillis
+- PennState &lt;a href="https://newonlinecourses.science.psu.edu/stat504/node/180/"&gt;Stat 504&lt;/a&gt; (heavy on the stat theory)
+
+These slides can be found at &lt;a href="https://maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja"&gt;maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja#1&lt;/a&gt;
+
+&lt;!-- social media info --&gt;
+&lt;div style="position:fixed; bottom:40px; left:70px;"&gt;
+&lt;div&gt;&lt;img src="libs/Twitter-Social-Icons/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png" width="40"/&gt; &lt;a href="https://twitter.com/Marym_Ryan"&gt; @Marym_Ryan &lt;/a&gt;&lt;/div&gt;
+&lt;div&gt;&lt;img src="libs/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png" width="40"/&gt; &lt;a href="https://github.com/maryryan"&gt; github.com/maryryan &lt;/a&gt; &lt;/div&gt;
+&lt;/div&gt;
     </textarea>
 <script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

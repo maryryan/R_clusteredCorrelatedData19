@@ -13,6 +13,7 @@
 #install.packages( 'gee' )
 #install.packages( 'survey' )
 #install.packages( 'geepack' )
+#remotes::install_github('yihui/xaringan')
 
 library( tidyverse, quietly=T, warn.conflicts = F )
 library( gee, quietly=T, warn.conflicts = F )

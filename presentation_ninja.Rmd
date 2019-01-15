@@ -236,7 +236,6 @@ Side note: two other popular functions for modeling longitudinal data are
       - `totPop18plus`: Population 18 years or older
       - `BAtotPop18plus`: Population 18 years or older with at least a Bachelors
       - `BApctTotPop18plus`: Percentage of population 18 years or older with at least a Bachelors
-      
 - 53 unique counties
 - 420 unique observations
 - 8 years of data
@@ -256,7 +255,7 @@ Side note: two other popular functions for modeling longitudinal data are
       
 # Example 1: Random Slopes and Intercepts
 
-```{r housing forest plots, fig.align='center'}
+```{r housing forest plots, fig.align='center', out.width="55%"}
 
 housing.grp <- groupedData( Median ~ yrsSince2009 | countyID,
                                   data=housing )
@@ -412,7 +411,7 @@ summary( house.ar1 )$coef
 
 # Example 2: Forest Plot
 
-```{r api forest plots, fig.align='center'}
+```{r api forest plots, fig.align='center', out.width="60%"}
 
 obs1 <- table(api.districts$CDS)
 obs1.ids <- as.numeric(names(obs1[obs1==1]))
@@ -571,3 +570,21 @@ summary( ohio.ar1 )$coef
 glmCI.long( ohio.ar1, robust = T )
 
 ```
+
+---
+
+# Thanks!
+
+More Resources
+- `gee` package <a href="https://cran.r-project.org/web/packages/gee/gee.pdf">documentation</a> on CRAN
+- Center for Multilevel Modeling: <a href="http://www.bristol.ac.uk/cmm/">http://www.bristol.ac.uk/cmm</a>
+- These <a href="https://www.theanalysisfactor.com/r-tutorial-glm1/">blogposts</a> from Dr. David Lillis
+- PennState <a href="https://newonlinecourses.science.psu.edu/stat504/node/180/">Stat 504</a> (heavy on the stat theory)
+
+These slides can be found at <a href="https://maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja">maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja#1</a>
+
+<!-- social media info -->
+<div style="position:fixed; bottom:40px; left:70px;">
+<div><img src="libs/Twitter-Social-Icons/Twitter_SocialIcon_Circle/Twitter_Social_Icon_Circle_White.png" width="40"/> <a href="https://twitter.com/Marym_Ryan"> @Marym_Ryan </a></div>
+<div><img src="libs/GitHub-Mark/PNG/GitHub-Mark-Light-120px-plus.png" width="40"/> <a href="https://github.com/maryryan"> github.com/maryryan </a> </div>
+</div>
