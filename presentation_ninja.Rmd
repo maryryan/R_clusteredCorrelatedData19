@@ -7,7 +7,7 @@ institute: "University of California, Irvine"
 output:
   xaringan::moon_reader:
     lib_dir: libs
-    css: ["default", "lucy-fonts"]#like lucy
+    css: ["default", "lucy-fonts", "headerSpace.css"]#like lucy
     nature:
       highlightStyle: github
       highlightLines: true
@@ -173,6 +173,26 @@ $$\boldsymbol{X}^T\boldsymbol{W}(\vec{Y} - \boldsymbol{X}\vec{\beta}) = 0$$
 
 - Implement this using the `gee()` function from the `gee` package
       - Can also use `lme()` from the `nlme` package, and `lmer()` from the `lme4` package
+
+---
+
+# Happy little data analyses
+
+ <div style="position:fixed; top:240px; left:100px; font-size: 14pt; width:91%">Regular linear regression is like painting with distinct lines:</div>
+  <div style="position:fixed; top:270px; left:100px; font-size: 14pt; width:91%">everything is neat and separate</div>
+ 
+```{r matisse, echo=FALSE, out.width='30%', fig.align="right"}
+knitr::include_graphics('./presentationExtras_clusteredCorrelatedDataNICAR2019/bobRossMeme_matisse.jpg')
+```
+ <div style="position:fixed; bottom:1px; left:4px;width:50%"></div>
+--
+
+ <div style="position:fixed; top:480px; left:100px; font-size: 14pt; width:91%">GEEs are more like painting in realism:</div>
+  <div style="position:fixed; top:510px; left:100px; font-size: 14pt; width:91%">you can blend colors (information) to get a more realistic view</div>
+ 
+```{r mona lisa, echo=FALSE, out.width='30%', fig.align="right"}
+knitr::include_graphics('./presentationExtras_clusteredCorrelatedDataNICAR2019/bobRossMeme_monaLisa.jpg')
+```
 
 ---
 class: middle
