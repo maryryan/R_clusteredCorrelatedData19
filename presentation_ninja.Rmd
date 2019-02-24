@@ -12,6 +12,7 @@ output:
       highlightStyle: github
       highlightLines: true
       countIncrementalSlides: false
+      slideNumberFormat: "%current%"
     seal: false
 ---
 ```{r setup, include = FALSE}
@@ -26,11 +27,19 @@ knitr::opts_chunk$set(cache=TRUE)
 #install.packages( 'geepack' )
 
 library( tidyverse, quietly=T, warn.conflicts = F )
+library( knitr, quietly=T, warn.conflicts = F )
 library( gee, quietly=T, warn.conflicts = F )
 library( geepack, quietly=T, warn.conflicts = F )
 library( survey, quietly=T, warn.conflicts = F  )
 
 ```
+
+```{r reduce code spacing, include = FALSE}
+hook1 <- function(x){ gsub("```\n*```r*\n*", "", x) }
+hook2 <- function(x){ gsub("```\n+```\n", "", x) }
+knit_hooks$set(document = hook2)
+```
+
 
 ```{r load data, include = FALSE}
 data(ohio)

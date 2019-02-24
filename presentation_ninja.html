@@ -18,6 +18,9 @@
 
 
 
+
+
+
 layout: true
 class: inverse
 
@@ -207,9 +210,6 @@ house.indep &lt;- gee( Median ~ BApctTotPop18plus + yrsSince2009,
 
 ```r
 summary( house.indep )$coef
-```
-
-```
 ##                    Estimate Naive S.E.   Naive z Robust S.E.  Robust z
 ## (Intercept)       45973.153  2601.1356 17.674262   4757.9960  9.662293
 ## BApctTotPop18plus  5606.520   151.7380 36.948698    325.4783 17.225481
@@ -223,9 +223,6 @@ summary( house.indep )$coef
 
 ```r
 summary( house.indep )$coef
-```
-
-```
 ##                    Estimate Naive S.E.   Naive z Robust S.E.  Robust z
 ## (Intercept)       45973.153  2601.1356 17.674262   4757.9960  9.662293
 ## BApctTotPop18plus  5606.520   151.7380 36.948698    325.4783 17.225481
@@ -235,9 +232,6 @@ summary( house.indep )$coef
 
 ```r
 summary( lm(Median ~ BApctTotPop18plus + yrsSince2009, data = housing ) )$coef
-```
-
-```
 ##                    Estimate Std. Error   t value      Pr(&gt;|t|)
 ## (Intercept)       45973.153  2601.1356 17.674262  1.402553e-52
 ## BApctTotPop18plus  5606.520   151.7380 36.948698 1.326802e-133
@@ -259,9 +253,6 @@ house.exch &lt;- gee (Median ~ BApctTotPop18plus + yrsSince2009,
 
 ```r
 summary( house.exch )$coef
-```
-
-```
 ##                     Estimate Naive S.E.   Naive z Robust S.E.  Robust z
 ## (Intercept)       109779.313  5215.7652 21.047595   5450.4619 20.141286
 ## BApctTotPop18plus   1053.461   240.0832  4.387899    355.6628  2.961966
@@ -285,9 +276,6 @@ house.ar1 &lt;- gee( Median ~ BApctTotPop18plus + yrsSince2009,
 
 ```r
 summary( house.ar1 )$coef
-```
-
-```
 ##                      Estimate Naive S.E.   Naive z Robust S.E. Robust z
 ## (Intercept)       116922.8807  5411.9154 21.604713   3813.7039 30.65862
 ## BApctTotPop18plus    473.5751   226.6894  2.089092    184.2705  2.57000
@@ -329,9 +317,6 @@ summary( house.ar1 )$coef
 
 ```r
 summary( api.exch )$coef
-```
-
-```
 ##                  Estimate   Naive S.E.    Naive z  Robust S.E.   Robust z
 ## (Intercept) -2.365369e+04 793.17629852 -29.821484 811.70078555 -29.140904
 ## PCT_AA      -2.759615e+00   0.12720559 -21.694131   0.22207777 -12.426344
@@ -382,9 +367,6 @@ ohio.exch &lt;- gee( resp ~ age + smoke,
 
 ```r
 summary( ohio.exch )$coef
-```
-
-```
 ##               Estimate Naive S.E.    Naive z Robust S.E.   Robust z
 ## (Intercept) -1.8804277 0.11483941 -16.374411  0.11389291 -16.510489
 ## age         -0.1133850 0.04354142  -2.604073  0.04385531  -2.585434
@@ -398,9 +380,6 @@ summary( ohio.exch )$coef
 
 ```r
 glmCI.long( ohio.exch, robust = T )
-```
-
-```
 ##             exp( Est ) robust ci95.lo robust ci95.hi robust z value
 ## (Intercept)     0.1525         0.1220         0.1907       -16.5105
 ## age             0.8928         0.8193         0.9729        -2.5854
@@ -429,9 +408,6 @@ ohio.ar1 &lt;- gee( resp ~ age + smoke,
 
 ```r
 summary( ohio.ar1 )$coef
-```
-
-```
 ##               Estimate Naive S.E.    Naive z Robust S.E.   Robust z
 ## (Intercept) -1.8981575 0.10961955 -17.315867  0.11467812 -16.552045
 ## age         -0.1147505 0.05586065  -2.054229  0.04493528  -2.553685
@@ -445,9 +421,6 @@ summary( ohio.ar1 )$coef
 
 ```r
 glmCI.long( ohio.ar1, robust = T )
-```
-
-```
 ##             exp( Est ) robust ci95.lo robust ci95.hi robust z value
 ## (Intercept)     0.1498         0.1197         0.1876       -16.5520
 ## age             0.8916         0.8164         0.9737        -2.5537
@@ -480,7 +453,8 @@ These slides can be found at &lt;a href="https://maryryan.github.io/R_clusteredC
 <script>var slideshow = remark.create({
 "highlightStyle": "github",
 "highlightLines": true,
-"countIncrementalSlides": false
+"countIncrementalSlides": false,
+"slideNumberFormat": "%current%"
 });
 if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
   window.dispatchEvent(new Event('resize'));
