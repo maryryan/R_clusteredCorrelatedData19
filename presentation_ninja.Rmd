@@ -22,11 +22,13 @@ knitr::opts_chunk$set(cache=TRUE)
 
 ```{r load libraries, include = FALSE}
 #install.packages( 'tidyverse' )
+#install.packages( 'gridExtra' )
 #install.packages( 'gee' )
 #install.packages( 'survey' )
 #install.packages( 'geepack' )
 
 library( tidyverse, quietly=T, warn.conflicts = F )
+library( gridExtra, quietly=T, warn.conflicts = F )
 library( knitr, quietly=T, warn.conflicts = F )
 library( gee, quietly=T, warn.conflicts = F )
 library( geepack, quietly=T, warn.conflicts = F )
@@ -144,6 +146,30 @@ Other iterations:
 - Regular linear regression assumes each datapoint is *independent* of each other
 - What if we have multiple datapoints for each person/school/hospital/location we're measuring?
 
+--
+
+```{r trend plot 1, echo=FALSE, fig.height=4.5, fig.width=8, fig.align="center"}
+x <- c(1,2,3,2,3,4,3,4,5,5,6,7,6,7,8,8, 9,10)
+
+y <- c(4,3,2,5,2,1,6,5,3,7,6,4,8,5,2,10,8,6)
+
+id <- rep(1:6, each=3)
+
+data <- as.data.frame( cbind(id, x, y) )
+p1 <- data %>% 
+   ggplot(aes(x,y)) +
+   geom_point() +
+   theme_grey()
+
+p2 <- data %>% 
+   ggplot(aes(x,y, color=factor(id))) +
+   geom_point() +
+   labs(color='ID') +
+   theme_grey()
+
+grid.arrange(p1, p2, nrow = 1)
+
+```
 ---
 class: middle
 
