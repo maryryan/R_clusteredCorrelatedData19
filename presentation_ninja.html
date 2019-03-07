@@ -5,7 +5,7 @@
     <meta charset="utf-8">
     <meta name="author" content="Mary Ryan" />
     <link href="libs/remark-css-0.0.1/default.css" rel="stylesheet" />
-    <link href="libs/remark-css-0.0.1/lucy-fonts.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/chocolate-fonts.css" rel="stylesheet" />
     <link rel="stylesheet" href="headerSpace.css" type="text/css" />
   </head>
   <body>
@@ -60,6 +60,7 @@ class: title-slide2, inverse
 Other iterations:  
 
 - "Remember that all models are wrong; the practical question is **how wrong do they have to be to not be useful**" (*Empirical Model-Building and Response Surfaces*, pg. 74)
+
 - "The most that can be expected from any model is that it can supply **a useful approximation to reality**: All models are wrong; some models are useful" (*Statistics for Experimenters*, pg. 440) 
 
 ---
@@ -67,11 +68,24 @@ Other iterations:
 # What's wrong with linear regression?
 
 - Regular linear regression assumes each datapoint is *independent* of each other
+
 - What if we have multiple datapoints for each person/school/hospital/location we're measuring?
 
 --
 
 &lt;img src="presentation_ninja_files/figure-html/trend plot 1-1.png" style="display: block; margin: auto;" /&gt;
+---
+
+# Random Intercepts and Slopes
+
+&lt;img src="presentation_ninja_files/figure-html/trends plot again-1.png" style="display: block; margin: auto;" /&gt;
+
+- **Random Intercepts**: an add-on intercept that differs by each cluster, that will align with whether a cluster begins above/below the population intercept
+      - i.e., good test-takers will have exam intercepts above the general population intercept, but their exam scores may change the same as other test-takers
+
+- **Random Slopes**: an add-on slope that will allow each cluster to have their own variation on the population slope
+      - i.e., some people are more receptive to a drug treatment than others, and improve more sharply
+
 ---
 class: middle
 
@@ -128,16 +142,21 @@ class: middle
 
 Like with the `lm()` function, there are several arguments we need to fill in:
 
-- **Formula**: this is the same formula you would plug in for `lm()`, of the form `response ~ variable1 + variable2 + …`
-- **id**: this is a variable in your dataframe that identifies your clusters. If I have 12 patients with 3 datapoints each, each datapoint needs to have something that tells us which patient it is coming from. Usually this is done as the very first column of your dataframe, where the id can be a number or a string.
-- **data**: like with `lm()`, this is the name of your dataframe
+- &lt;span style="color: #00A895"&gt;Formula&lt;/span&gt;: this is the same formula you would plug in for `lm()`, of the form  
+`response ~ variable1 + variable2 + …`
+
+- &lt;span style="color: #00A895"&gt;id&lt;/span&gt;: this is a variable in your dataframe that identifies your clusters.
+      - If I have 12 patients with 3 datapoints each, each datapoint needs to have something that tells us which patient it is coming from. Usually this is done as the very first column of your dataframe, where the id can be a number or a string.
+
+- &lt;span style="color: #00A895"&gt;data&lt;/span&gt;: like with `lm()`, this is the name of your dataframe
       
 ---
       
 # The `gee()` Function
 
-- **family**: the default for this argument is “gaussian”, which just means Normal. We generally won’t put anything in for this argument unless we’re dealing with binary data (we’ll see this later).
-- **corstr**: this tells the function how we want to do our weights.
+- &lt;span style="color: #00A895"&gt;family&lt;/span&gt;: the default for this argument is “gaussian”, which just means Normal. We generally won’t put anything in for this argument unless we’re dealing with binary data (we’ll see this later).
+
+- &lt;span style="color: #00A895"&gt;corstr&lt;/span&gt;: this tells the function how we want to do our weights.
       - There are 3 main options for this:
       1. “independence”: this is the default and will get us `lm()`
       2. “exchangeable”: this gives us random intercepts
@@ -163,17 +182,6 @@ Side note: two other popular functions for modeling longitudinal data are
 
 ---
 
-# Robust Variance
-
-- Sometimes different clusters/groups will have different variances
-- Robust variance is a post-model fix-em-up to account for different cluster variances
-      - If the variances really don’t differ by cluster, you’ll get something pretty close to the regular varaince
-      - If they do differ, then this will help fix the variance
-- Robust variance doesn't perform well when there are fewer than 50 clusters
-      - If you have fewer than 50 clusters, it’s safer to go with the regular variance because at least we know why it’s wrong
-
----
-
 # Example 1: Median Housing Value in Texas
 
 - Housing dataset (select variables)
@@ -184,17 +192,21 @@ Side note: two other popular functions for modeling longitudinal data are
       - `totPop18plus`: Population 18 years or older
       - `BAtotPop18plus`: Population 18 years or older with at least a Bachelors
       - `BApctTotPop18plus`: Percentage of population 18 years or older with at least a Bachelors
+      
 - 53 unique counties
+
 - 420 unique observations
+
 - 8 years of data
 
-**Question: how does the percentage of Bachelors-holders in a distrct affect mean housing value?**
+&lt;span style="color: #00A895"&gt;Question: how does the percentage of Bachelors-holders in a distrct affect mean housing value?&lt;/span&gt;
 
 ---
 
 # Example 1: Random Slopes and Intercepts
 
 - Forest plot: represents what the intercepts and slopes would be if we performed individual lm()s on the data from each subject separately
+
 - If the data were truly independent, all the lines would be overlapping
       - If plot on left shows non-overlapping lines: case for random intercepts
       - If plot on right shows non-overlapping lines: case for random slopes
@@ -203,7 +215,7 @@ Side note: two other popular functions for modeling longitudinal data are
       
 # Example 1: Random Slopes and Intercepts
 
-&lt;img src="presentation_ninja_files/figure-html/housing forest plots-1.png" width="55%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_ninja_files/figure-html/housing forest plots-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -265,6 +277,19 @@ summary( lm(Median ~ BApctTotPop18plus + yrsSince2009, data = housing ) )$coef
 ## BApctTotPop18plus  5606.520   151.7380 36.948698 1.326802e-133
 ## yrsSince2009       2399.319   355.2078  6.754691  4.825551e-11
 ```
+
+---
+
+# Robust Variance
+
+- Sometimes different clusters/groups will have different variances
+
+- Robust variance is a post-model fix-em-up to account for different cluster variances
+      - If the variances really don’t differ by cluster, you’ll get something pretty close to the regular varaince
+      - If they do differ, then this will help fix the variance
+      
+- Robust variance doesn't perform well when there are fewer than 50 clusters
+      - If you have fewer than 50 clusters, it’s safer to go with the regular variance because at least we know why it’s wrong
 
 ---
 
@@ -335,13 +360,13 @@ summary( house.ar1 )$coef
 
 - 7 years of data
 
-**Question: how does charter status affect district API score?**
+&lt;span style="color: #00A895"&gt;Question: how does charter status affect district API score?&lt;/span&gt;
 
 ---
 
 # Example 2: Forest Plot
 
-&lt;img src="presentation_ninja_files/figure-html/api forest plots-1.png" width="60%" style="display: block; margin: auto;" /&gt;
+&lt;img src="presentation_ninja_files/figure-html/api forest plots-1.png" width="70%" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -381,10 +406,12 @@ summary( api.exch )$coef
       - `id`: a numeric vector for subject id
       - `age`: a numeric vector of age, 0 is 9 years old
       - `smoke`: an indicator of maternal smoking at the first year of the study
+      
 - 537 unique subjects
+
 - 2148 total observations
 
-**Question: how does maternal smoking affect wheezing?**
+&lt;span style="color: #00A895"&gt;Question: how does maternal smoking affect wheezing?&lt;/span&gt;
 
 ---
 
@@ -393,7 +420,14 @@ summary( api.exch )$coef
 - Binary response, so using logistic regression
       - binary response transformed using logit function:
       - regression tells us about variables changing the *log-odds* of response, instead of the mean
+      
 `$$logit(\mu) = ln(\frac{\mu}{1-\mu})$$`
+
+--
+
+- This means `\(e^{\beta_1 X}\)` will be the odds ratio:
+      - If `\(e^{\beta_1 X}&gt;1\)`, then the response is `\((1-e^{\beta_1 X})\)`% &lt;span style="color: #00A895"&gt;more likely&lt;/span&gt; to occur when `\(X\)` is increased by one unit
+      - If  `\(e^{\beta_1 X}&lt;1\)`, then the response is `\((1-e^{\beta_1 X})\)`% &lt;span style="color: #00A895"&gt;less likely&lt;/span&gt; to occur when `\(X\)` is increased by one unit
 
 ---
 
@@ -494,9 +528,13 @@ glmCI.long( ohio.ar1, robust = T )
 
 More Resources
 - `gee` package &lt;a href="https://cran.r-project.org/web/packages/gee/gee.pdf"&gt;documentation&lt;/a&gt; on CRAN
+
 - Center for Multilevel Modeling: &lt;a href="http://www.bristol.ac.uk/cmm/"&gt;http://www.bristol.ac.uk/cmm&lt;/a&gt;
+
 - These &lt;a href="https://www.theanalysisfactor.com/r-tutorial-glm1/"&gt;blogposts&lt;/a&gt; from Dr. David Lillis
+
 - PennState &lt;a href="https://newonlinecourses.science.psu.edu/stat504/node/180/"&gt;Stat 504&lt;/a&gt; (heavy on the stat theory)
+
 
 These slides can be found at &lt;a href="https://maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja"&gt;maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja#1&lt;/a&gt;
 
