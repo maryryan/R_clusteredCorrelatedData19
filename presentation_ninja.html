@@ -182,6 +182,13 @@ Side note: two other popular functions for modeling longitudinal data are
 
 ---
 
+# Side Notes!
+
+- Evidently RStudio on the conference computers will not load some packages if you type in `library( package )`
+
+- Please run all the script in the &lt;span style="color: #00A895"&gt;LOAD PACKAGES&lt;/span&gt; portion of your script, without the spaces between the arguments and the parentheses
+
+---
 # Example 1: Median Housing Value in Texas
 
 - Housing dataset (select variables)
@@ -211,6 +218,10 @@ Side note: two other popular functions for modeling longitudinal data are
       - If plot on left shows non-overlapping lines: case for random intercepts
       - If plot on right shows non-overlapping lines: case for random slopes
 
+&lt;!-- side note box --&gt;
+&lt;div style="background: #5f6063; padding: 20px; border-radius: 25px; width:700px"&gt;&lt;i&gt;
+Note: Type install.packages("nlme") and library(nlme) into your consoles -- I originally forgot to include this package in the code file
+&lt;/i&gt;&lt;/div&gt;
 ---
       
 # Example 1: Random Slopes and Intercepts
@@ -412,6 +423,12 @@ summary( api.exch )$coef
 - 2148 total observations
 
 &lt;span style="color: #00A895"&gt;Question: how does maternal smoking affect wheezing?&lt;/span&gt;
+
+&lt;!-- side note box --&gt;
+&lt;div style="background: #5f6063; padding: 20px; border-radius: 25px; width:700px"&gt;&lt;i&gt;
+Note: Type "data(ohio)" into your console to access this data -- your code file has "data( ohio )" and that evidently fails to call the data
+&lt;/i&gt;&lt;/div&gt;
+
 
 ---
 

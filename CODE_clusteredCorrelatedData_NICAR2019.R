@@ -5,7 +5,7 @@
 ###################### March 7-10
 ###################### INSTRUCTOR: Mary Ryan
 ###################### CREATED 11.27.2018
-###################### UPDATED 12.13.2018
+###################### UPDATED 3.7.2019
 ##################
 
 #### LOAD PACKAGES ####
@@ -13,12 +13,15 @@
 #install.packages( 'gee' )
 #install.packages( 'survey' )
 #install.packages( 'geepack' )
+#install.packages( 'nlme' )
 #remotes::install_github('yihui/xaringan')
 
 library( tidyverse, quietly=T, warn.conflicts = F )
 library( gee, quietly=T, warn.conflicts = F )
 library( geepack, quietly=T, warn.conflicts = F )
 library( survey, quietly=T, warn.conflicts = F  )
+library( nlme, quietly=T, warn.conflicts = F  )
+
 
 #### FUNCTIONS WE NEED ####
 ### function that allows us to get confidence intervals on binary longitudinal glms ###
@@ -79,7 +82,7 @@ api.districts <- api.valid[which( api.valid$RTYPE == "D" ),]
 ### example 3 ###
 # data from geepack package; subset of six-city study #
 # original data from: Fitzmaurice, G.M. and Laird, N.M. (1993) A likelihood-based method for analyzing longitudinal binary responses, Biometrika 80: 141–151. #
-data( ohio )
+data(ohio)
 
 #### EXAMPLE 1: Median Housing Value in Texas ####
 ## forest plot ##
