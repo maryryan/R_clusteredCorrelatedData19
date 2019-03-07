@@ -98,7 +98,6 @@ class: middle
 `$$\boldsymbol{X}^T\boldsymbol{W}(\vec{Y} - \boldsymbol{X}\vec{\beta}) = 0$$`
 
 - Implement this using the `gee()` function from the `gee` package
-      - Can also use `lme()` from the `nlme` package, and `lmer()` from the `lme4` package
 
 ---
 
@@ -137,7 +136,7 @@ Like with the `lm()` function, there are several arguments we need to fill in:
       
 # The `gee()` Function
 
-- **family**: the default for this argument is “gaussian”“, which just means Normal. We generally won’t put anything in for this argument unless we’re dealing with binary data (we’ll see this later).
+- **family**: the default for this argument is “gaussian”, which just means Normal. We generally won’t put anything in for this argument unless we’re dealing with binary data (we’ll see this later).
 - **corstr**: this tells the function how we want to do our weights.
       - There are 3 main options for this:
       1. “independence”: this is the default and will get us `lm()`
@@ -276,7 +275,7 @@ summary( lm(Median ~ BApctTotPop18plus + yrsSince2009, data = housing ) )$coef
 house.exch &lt;- gee (Median ~ BApctTotPop18plus + yrsSince2009,
                  id = countyID,
                  data = housing,
-                 corstr = "exchangeable" )
+*                corstr = "exchangeable" )
 ```
 
 
@@ -300,8 +299,8 @@ summary( house.exch )$coef
 house.ar1 &lt;- gee( Median ~ BApctTotPop18plus + yrsSince2009,
                  id = countyID,
                  data = housing,
-                 corstr = "AR-M",
-                 Mv = 1 )
+*                corstr = "AR-M",
+*                Mv = 1 )
 ```
 
 
@@ -331,7 +330,9 @@ summary( house.ar1 )$coef
       - `MEALS`: Percentage of Students Tested that are eligible for Free or Reduced Price Lunch Program
 
 - 1047 unique school districts
+
 - 7178 total observations
+
 - 7 years of data
 
 **Question: how does charter status affect district API score?**
@@ -347,6 +348,12 @@ summary( house.ar1 )$coef
 # Example 2: Modeling with Exchangeable Structure
 
 
+```r
+api.exch &lt;- gee( API ~ PCT_AA + PCT_AS + PCT_HI + MEALS + P_EL + year,
+                  id = CDS,
+                  data = api.districts,
+                  corstr = "exchangeable" )
+```
 
 
 
@@ -397,7 +404,7 @@ summary( api.exch )$coef
 ohio.exch &lt;- gee( resp ~ age + smoke,
                    id = id,
                    data = ohio,
-                   family=binomial(link='logit'),
+*                  family=binomial(link='logit'),
                    corstr="exchangeable",
                   silent = T )
 ```
