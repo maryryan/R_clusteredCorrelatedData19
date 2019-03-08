@@ -122,6 +122,10 @@ class: title-slide2, inverse
 <div><img src="https://svgsilh.com/svg/1873373-ffffff.svg" width="35"/><a href="https://www.ics.uci.edu/~marymr/"> www.ics.uci.edu/~marymr </a></div>
 </div>
 
+<!-- slide link info -->
+<div style="position:fixed; bottom:60px; right:70px;">
+<a href="http://bit.ly/nicar19-cluster">http://bit.ly/nicar19-cluster</a>
+</div>
 ---
 
 # What's wrong with linear regression?
@@ -693,8 +697,10 @@ More Resources
 
 - PennState <a href="https://newonlinecourses.science.psu.edu/stat504/node/180/">Stat 504</a> (heavy on the stat theory)
 
+<!-- give us some space -->
+<div style="background-color: #262722; width:91%">&nbsp;&nbsp;&nbsp;</div>
 
-These slides can be found at <a href="https://maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja">maryryan.github.io/R_clusteredCorrelatedData19/presentation_ninja#1</a>
+### These slides can be found at <a href="http://bit.ly/nicar19-cluster">http://bit.ly/nicar19-cluster</a>
 
 <!-- social media info -->
 <div style="position:fixed; bottom:40px; left:70px;">
